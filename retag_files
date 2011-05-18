@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require 'find'
+require 'rubygems'
+require File.join(File.dirname(__FILE__), 'progress_bar')
+require File.join(File.dirname(__FILE__), 'file_parser')
+
+current_dir=File.expand_path(ARGV[0] || Dir.pwd)
+
+puts "Tagging files in #{current_dir}"
+
+work={}
+
+Find.find(current_dir) do |path|
+  if not FileTest.directory?(path) and path =~ /.mp3$/i
+    data = FileParser.new(path)
+
+    unless data.ignored?
+      if data.matches?
+
+        puts "#{path}\n   Tagged: Artist: [#{data.artist}], Year: [#{data.year}], Album: [#{data.album}], Disc: [#{data.disc}], Track: [#{data.track}], Title: [#{data.title}], Genre: [#{data.genre_display}], Comment: [#{data.comment}]"
+    		work[path] = data
+      end
+    end
+  end
+end
+
+if work.size == 0
+  puts "No files found!"
+else
+  print "\nRe-tag all listed files? (Y/N) "
+  proceed = STDIN.gets
+
+  if proceed.chomp.upcase == "Y"
+    print "Tagging #{work.size} files...\n"
+    progress_bar = ProgressBar.new(work.size)
+    work.each_pair do |path, work|
+      #`id3v2 -d \"#{path}\"`
+      cmd = "id3v2 -a \"#{work.artist}\" -A \"#{work.album}\" -t \"#{work.title}\" -y \"#{work.year}\" -T \"#{work.track}\" -g #{work.genre} --TPOS \"#{work.disc}\" -c \"#{work.comment}\" \"#{path}\" 2>/dev/null"
+      `#{cmd}`
+      progress_bar.progress
+    end
+    progress_bar.complete
+  else
+    puts "Aborting retagging."
+  end
+end

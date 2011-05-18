@@ -1,0 +1,20 @@
+These are scripts I use to manage my mp3 collection.
+
+All of my files follow a pretty strict naming convention, looking like:
+
+/Artist Name/Album Year - Album Name/Track - Title.mp3
+
+and since I name files so consistently, I wrote scripts that can completely redo the ID3 tags for a directory of mp3 files based on the names.  These are those scripts.
+
+There are some exceptions, such as Live/Bootleg albums, Tribute albums, and soundtracks, but those all have their own consistency as well.
+
+The system also uses a file, .genres.txt, to figure out the genres based on artists.  As it spiders through files it tries to retag, if it encounters an artist name that it does not recognize, it asks the user for the genre of music for that artist.  Once it gets it, it saves it off for future use.  The first scan through an mp3 collection takes very long because of this, but afterwards it only asks for new artists
+
+Files:
+
+file_parser.rb - this is the main library that can take a single file's full name and understand it
+progress_bar.rb - this is a library I wrote that prints progress bars since this is a command line app that can run for a while
+retag_files - the main file retagger script
+find_misnamed - finds files that do not conform to the patterns understood by file_parser.rb, so I can rename them
+
+I doubt this project will be useful to anyone that doesn't use my naming scheme, but here it is just in case.  Obviously if you have your own naming system, the scripts can be reused as long as file_parser is modified to understand the new format.
