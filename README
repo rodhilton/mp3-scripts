@@ -17,4 +17,6 @@ progress_bar.rb - this is a library I wrote that prints progress bars since this
 retag_files - the main file retagger script
 find_misnamed - finds files that do not conform to the patterns understood by file_parser.rb, so I can rename them
 
+Note: the retagger does not use any ruby libraries to do the id3 tag setting, as my own benchmarks found them to be very slow.  The script shells out to id3v2, the fastest tagging program I was able to use for this purpose.  That program must be installed on the system running the script.  Even worse, if the program is not found the script will fail silently.
+
 I doubt this project will be useful to anyone that doesn't use my naming scheme, but here it is just in case.  Obviously if you have your own naming system, the scripts can be reused as long as file_parser is modified to understand the new format.
